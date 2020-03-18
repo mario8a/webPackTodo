@@ -1,6 +1,9 @@
+import { Todo } from '../classes';
+import { todoList } from '../index';
+
 // Referencias html
 const divTodoList = document.querySelector('.todo-list');
-
+const txtInput = document.querySelector('.new-todo');
 
 export const crearTodoHtml = (todo) => {
 
@@ -22,3 +25,38 @@ export const crearTodoHtml = (todo) => {
 
     return div.firstElementChild;
 };
+
+//eventos
+txtInput.addEventListener('keyup', (event) => {
+
+    if (event.keyCode === 13 && txtInput.value.length > 0) {
+        console.log(txtInput.value);
+        const nuevoTodo = new Todo(txtInput.value);
+        todoList.nuevoTodo(nuevoTodo);
+
+        crearTodoHtml(nuevoTodo);
+        //borrando el input
+        txtInput.value = '';
+    }
+
+});
+
+divTodoList.addEventListener('click', (event) => {
+
+
+    const nombreElemento = event.target.localName;
+    const todoElemento = event.target.parentElement.parentElement;
+    const todoId = todoElemento.getAttribute('data-id');
+    // console.log(todoId);
+
+    if (nombreElemento.includes('input')) { //jhizo click
+        todoList.marcarCompletado(todoId);
+        todoElemento.classList.toggle('completed');
+    } else if (nombreElemento.includes('button')) { // hay que borrar el todo
+        todoList.eliminarTodo(todoId);
+        divTodoList.removeChild(todoElemento);
+    }
+
+    // console.log(todoList);
+
+});
